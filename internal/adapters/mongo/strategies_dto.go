@@ -34,7 +34,7 @@ func fromStrategyCoreToDTO(input *domain.Strategy) (*StrategyDTO, error) {
 	return dto, nil
 }
 
-func fromStrategyDTOToCore(input *StrategyDTO) domain.Strategy {
+func fromStrategyDTOToCore(input StrategyDTO) domain.Strategy {
 	result := domain.Strategy{
 		ID:          input.ID.Hex(),
 		Name:        input.Name,
