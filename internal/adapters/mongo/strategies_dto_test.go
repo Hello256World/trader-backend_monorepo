@@ -9,7 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/v2/bson"
 )
 
-func Test_fromStrategyCoreToDTO(t *testing.T) {
+func TestFromStrategyCoreToDTO(t *testing.T) {
 	t.Parallel()
 
 	validHexID := "507f1f77bcf86cd799439011"
@@ -105,7 +105,7 @@ func Test_fromStrategyCoreToDTO(t *testing.T) {
 	}
 }
 
-func Test_fromStrategyDTOToCore(t *testing.T) {
+func TestFromStrategyDTOToCore(t *testing.T) {
 	t.Parallel()
 
 	knownID := bson.NewObjectID()

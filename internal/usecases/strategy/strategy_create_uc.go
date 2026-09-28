@@ -28,32 +28,32 @@ type CreateStrategyRequest struct {
 }
 
 type CreateStrategyResponse struct {
-	strategyResponse string
+	StrategyID string
 }
 
-func (su strategyCreateUC) Handle(c context.Context, req *CreateStrategyRequest) (*CreateStrategyResponse, error) {
-	strategy, err := su.fromCreateStrategyRequestToStrategy(req)
+func (uc strategyCreateUC) Handle(c context.Context, req *CreateStrategyRequest) (*CreateStrategyResponse, error) {
+	strategy, err := uc.fromCreateStrategyRequestToStrategy(req)
 
 	if err != nil {
 		return nil, err
 	}
 
-	strategyID, err := su.repo.Insert(c, strategy)
+	strategyID, err := uc.repo.Insert(c, strategy)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return &CreateStrategyResponse{strategyResponse: strategyID}, nil
+	return &CreateStrategyResponse{StrategyID: strategyID}, nil
 }
 
-func (su strategyCreateUC) fromCreateStrategyRequestToStrategy(req *CreateStrategyRequest) (*domain.Strategy, error) {
+func (uc strategyCreateUC) fromCreateStrategyRequestToStrategy(req *CreateStrategyRequest) (*domain.Strategy, error) {
 	if req == nil {
 		return nil, apierrors.NewBadRequestError("invalid message")
 	}
 
 	if req.Name = strings.TrimSpace(req.Name); req.Name == "" {
-		return nil, apierrors.NewBadRequestError("Invalid message")
+		return nil, apierrors.NewBadRequestError("Invalid name")
 	}
 
 	return &domain.Strategy{Name: req.Name, Description: req.Descrption}, nil
