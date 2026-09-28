@@ -16,3 +16,7 @@ packages:
     interfaces:
       StrategiesRepository:
         config: {}
+  # github.com/Hello256World/trader-backend_monorepo/internal/usecases/strategy:
+  #   interfaces:
+  #     StrategyCreateUC:
+  #       config: {}
