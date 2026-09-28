@@ -5,9 +5,9 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/Hello256World/trader-backend_monorepo/internal/domain"
 	"github.com/Hello256World/trader-backend_monorepo/internal/mocks"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 func Test_CreateStrategyUC_Handle(t *testing.T) {
@@ -25,11 +25,9 @@ func Test_CreateStrategyUC_Handle(t *testing.T) {
 
 	t.Run("create strategy return error", func(t *testing.T) {
 		t.Parallel()
-		mockRepository := &mocks.ManualStrategyRepositoryMock{}
+		mockRepository := mocks.NewStrategiesRepositoryMock(t)
 
-		mockRepository.InsertFn = func(ctx context.Context, s *domain.Strategy) (string, error) {
-			return "", errors.New("we have and error")
-		}
+		mockRepository.On("Insert", context.Background(), mock.Anything).Return("", errors.New("we have an error")).Once()
 
 		strategyUC := strategyCreateUC{
 			repo: mockRepository,
@@ -38,17 +36,15 @@ func Test_CreateStrategyUC_Handle(t *testing.T) {
 		res, err := strategyUC.Handle(context.Background(), &CreateStrategyRequest{Name: "Alex"})
 
 		assert.Nil(t, res)
-		assert.EqualError(t, err, "we have and error")
+		assert.EqualError(t, err, "we have an error")
 
 	})
 
 	t.Run("successfully create strategy", func(t *testing.T) {
 		t.Parallel()
-		mockRepository := &mocks.ManualStrategyRepositoryMock{}
+		mockRepository := mocks.NewStrategiesRepositoryMock(t)
 
-		mockRepository.InsertFn = func(ctx context.Context, s *domain.Strategy) (string, error) {
-			return "strategy-id", nil
-		}
+		mockRepository.On("Insert", context.Background(), mock.Anything).Return("strategy-id", nil)
 
 		strategyUC := strategyCreateUC{
 			repo: mockRepository,
