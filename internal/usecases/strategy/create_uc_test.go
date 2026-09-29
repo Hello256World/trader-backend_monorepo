@@ -15,9 +15,9 @@ func Test_CreateStrategyUC_Handle(t *testing.T) {
 
 	t.Run("invalid request returns error", func(t *testing.T) {
 		t.Parallel()
-		strategyUC := strategyCreateUC{}
+		strategyUC := createUC{}
 
-		res, err := strategyUC.Handle(context.Background(), &CreateStrategyRequest{})
+		res, err := strategyUC.Handle(context.Background(), &CreateRequest{})
 
 		assert.Nil(t, res)
 		assert.EqualError(t, err, "Invalid name")
@@ -29,11 +29,11 @@ func Test_CreateStrategyUC_Handle(t *testing.T) {
 
 		mockRepository.On("Insert", context.Background(), mock.Anything).Return("", errors.New("we have an error")).Once()
 
-		strategyUC := strategyCreateUC{
+		strategyUC := createUC{
 			repo: mockRepository,
 		}
 
-		res, err := strategyUC.Handle(context.Background(), &CreateStrategyRequest{Name: "Alex"})
+		res, err := strategyUC.Handle(context.Background(), &CreateRequest{Name: "Alex"})
 
 		assert.Nil(t, res)
 		assert.EqualError(t, err, "we have an error")
@@ -46,11 +46,11 @@ func Test_CreateStrategyUC_Handle(t *testing.T) {
 
 		mockRepository.On("Insert", context.Background(), mock.Anything).Return("strategy-id", nil)
 
-		strategyUC := strategyCreateUC{
+		strategyUC := createUC{
 			repo: mockRepository,
 		}
 
-		res, err := strategyUC.Handle(context.Background(), &CreateStrategyRequest{Name: "Alex"})
+		res, err := strategyUC.Handle(context.Background(), &CreateRequest{Name: "Alex"})
 
 		assert.NotNil(t, res)
 		assert.NoError(t, err)

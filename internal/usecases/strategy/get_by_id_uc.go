@@ -8,29 +8,29 @@ import (
 	"github.com/Hello256World/trader-backend_monorepo/pkg/apierrors"
 )
 
-type StrategyGetByIDUC interface {
-	Handle(context.Context, *GetStrategyByIDRequest) (*GetStrategyByIDResponse, error)
+type GetByIDUC interface {
+	Handle(context.Context, *GetByIDRequest) (*GetByIDResponse, error)
 }
 
-type strategyGetByIDUC struct {
+type getByIDUC struct {
 	repo ports.StrategiesRepository
 }
 
-func NewStrategyGetByIDUC(repo ports.StrategiesRepository) StrategyGetByIDUC {
-	return &strategyGetByIDUC{
+func NewGetByIDUC(repo ports.StrategiesRepository) GetByIDUC {
+	return &getByIDUC{
 		repo: repo,
 	}
 }
 
-type GetStrategyByIDRequest struct {
+type GetByIDRequest struct {
 	ID string
 }
 
-type GetStrategyByIDResponse struct {
+type GetByIDResponse struct {
 	Strategy *domain.Strategy
 }
 
-func (uc *strategyGetByIDUC) Handle(c context.Context, req *GetStrategyByIDRequest) (*GetStrategyByIDResponse, error) {
+func (uc *getByIDUC) Handle(c context.Context, req *GetByIDRequest) (*GetByIDResponse, error) {
 	if req == nil {
 		return nil, apierrors.NewBadRequestError("Nil req passed")
 	}
@@ -40,7 +40,7 @@ func (uc *strategyGetByIDUC) Handle(c context.Context, req *GetStrategyByIDReque
 		return nil, err
 	}
 
-	return &GetStrategyByIDResponse{
+	return &GetByIDResponse{
 		Strategy: strategy,
 	}, nil
 }

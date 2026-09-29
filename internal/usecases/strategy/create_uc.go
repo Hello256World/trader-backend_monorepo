@@ -9,29 +9,29 @@ import (
 	"github.com/Hello256World/trader-backend_monorepo/pkg/apierrors"
 )
 
-type StrategyCreateUC interface {
-	Handle(c context.Context, req *CreateStrategyRequest) (*CreateStrategyResponse, error)
+type CreateUC interface {
+	Handle(context.Context, *CreateRequest) (*CreateResponse, error)
 }
 
-type strategyCreateUC struct {
+type createUC struct {
 	repo ports.StrategiesRepository
 }
 
-func NewStrategyCreateUC(repo ports.StrategiesRepository) StrategyCreateUC {
-	return &strategyCreateUC{
+func NewCreateUC(repo ports.StrategiesRepository) CreateUC {
+	return &createUC{
 		repo: repo,
 	}
 }
 
-type CreateStrategyRequest struct {
+type CreateRequest struct {
 	Name, Descrption string
 }
 
-type CreateStrategyResponse struct {
+type CreateResponse struct {
 	StrategyID string
 }
 
-func (uc strategyCreateUC) Handle(c context.Context, req *CreateStrategyRequest) (*CreateStrategyResponse, error) {
+func (uc createUC) Handle(c context.Context, req *CreateRequest) (*CreateResponse, error) {
 	strategy, err := uc.fromCreateStrategyRequestToStrategy(req)
 
 	if err != nil {
@@ -44,10 +44,10 @@ func (uc strategyCreateUC) Handle(c context.Context, req *CreateStrategyRequest)
 		return nil, err
 	}
 
-	return &CreateStrategyResponse{StrategyID: strategyID}, nil
+	return &CreateResponse{StrategyID: strategyID}, nil
 }
 
-func (uc strategyCreateUC) fromCreateStrategyRequestToStrategy(req *CreateStrategyRequest) (*domain.Strategy, error) {
+func (uc createUC) fromCreateStrategyRequestToStrategy(req *CreateRequest) (*domain.Strategy, error) {
 	if req == nil {
 		return nil, apierrors.NewBadRequestError("invalid message")
 	}

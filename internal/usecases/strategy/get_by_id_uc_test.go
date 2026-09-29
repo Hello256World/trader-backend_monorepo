@@ -16,7 +16,7 @@ func TestStrategyRepository_GetByID(t *testing.T) {
 
 	t.Run("nil value pass error", func(t *testing.T) {
 		t.Parallel()
-		strategy := &strategyGetByIDUC{}
+		strategy := &getByIDUC{}
 
 		res, err := strategy.Handle(context.Background(), nil)
 
@@ -31,9 +31,9 @@ func TestStrategyRepository_GetByID(t *testing.T) {
 
 		repoMock.On("GetByID", mock.Anything, mock.Anything).Return(nil, errors.New("This is the error")).Once()
 
-		strategy := NewStrategyGetByIDUC(repoMock)
+		strategy := NewGetByIDUC(repoMock)
 
-		res, err := strategy.Handle(context.Background(), &GetStrategyByIDRequest{})
+		res, err := strategy.Handle(context.Background(), &GetByIDRequest{})
 
 		assert.Nil(t, res)
 		assert.EqualError(t, err, "This is the error")
@@ -49,9 +49,9 @@ func TestStrategyRepository_GetByID(t *testing.T) {
 			Name: "my name",
 		}, nil).Once()
 
-		strategy := NewStrategyGetByIDUC(repoMock)
+		strategy := NewGetByIDUC(repoMock)
 
-		res, err := strategy.Handle(context.Background(), &GetStrategyByIDRequest{ID: "strategy-id"})
+		res, err := strategy.Handle(context.Background(), &GetByIDRequest{ID: "strategy-id"})
 
 		assert.NoError(t, err)
 		assert.NotNil(t, res)
