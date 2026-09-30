@@ -12,11 +12,14 @@ import (
 	"time"
 
 	"github.com/Hello256World/trader-backend_monorepo/internal/config"
-	mongodb "github.com/Hello256World/trader-backend_monorepo/pkg/db/mongo"
-
 	"github.com/gin-gonic/gin"
+	strategiesHTTP "github.com/Hello256World/trader-backend_monorepo/internal/adapters/http/strategy"
+	mongoAdapters "github.com/Hello256World/trader-backend_monorepo/internal/adapters/mongo"
+	strategiesUC "github.com/Hello256World/trader-backend_monorepo/internal/usecases/strategy"
 
 	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/mongo/readpref"
 )
 
 type Application interface {
@@ -26,7 +29,7 @@ type Application interface {
 type application struct {
 	conf        *config.Config
 	httpEngine  *gin.Engine
-	mongoClient *mongo.Client
+	mongoClient *mongo.Client 
 }
 
 func NewApplication(ctx context.Context) (Application, error) {
@@ -35,25 +38,36 @@ func NewApplication(ctx context.Context) (Application, error) {
 		return nil, err
 	}
 
-	client, err := mongodb.NewClient(ctx, conf.MongoConfig)
+	mongoOpts := options.Client().
+		SetAppName(conf.MongoConfig.AppName).
+		ApplyURI(conf.MongoConfig.GetConnectionURI()).
+		SetMinPoolSize(uint64(conf.MongoConfig.MinPoolSize)).
+		SetMaxPoolSize(uint64(conf.MongoConfig.MaxPoolSize))
+
+	mongoClient, err := mongo.Connect(mongoOpts)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error connecting to mongo: %w", err)
 	}
 
-	// strategiesColl := mongoClient.Database(conf.MongoConfig.Database).Collection("strategies")
-	// strategiesRepo := mongoAdapters.NewStrategiesRepository(strategiesColl)
-	// strategiesSvc := strategiesUC.NewService(strategiesRepo)
-	// handlers := strategiesHTTP.NewHandlers(strategiesSvc)
+	if err = mongoClient.Ping(ctx, readpref.Primary()); err != nil {
+		return nil, fmt.Errorf("error pinging mongo: %w", err)
+	}
 
-	// engine := gin.Default()
-	// strategiesHTTP.RegisterRoutes(engine, handlers)
+	strategiesColl := mongoClient.Database(conf.MongoConfig.Database).Collection("strategies")
+	strategiesRepo := mongoAdapters.NewStrategiesRepository(strategiesColl)
+	strategiesSvc := strategiesUC.NewService(strategiesRepo)
+	handlers := strategiesHTTP.NewHandlers(strategiesSvc)
+
+	engine := gin.Default()
+	strategiesHTTP.RegisterRoutes(engine, handlers)
 
 	return &application{
 		conf:        conf,
-		httpEngine:  gin.Default(),
-		mongoClient: client,
+		httpEngine:  engine,
+		mongoClient: mongoClient,
 	}, nil
 }
+
 
 func (a *application) Run(ctx context.Context) error {
 	srv := &http.Server{
