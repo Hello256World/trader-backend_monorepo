@@ -63,7 +63,7 @@ func (h *handler) GetByID(c *gin.Context) {
 		return
 	}
 
-	res := GetByIDResponse{Strategy: Strategy(*result.Strategy)}
+	res := GetByIDResponse{Strategy: fromStrategyCoreToHTTP(result.Strategy)}
 
 	c.JSON(http.StatusOK, res)
 }

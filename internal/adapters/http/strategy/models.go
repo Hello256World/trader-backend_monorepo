@@ -14,7 +14,7 @@ type GetByIDRequest struct {
 }
 
 type GetByIDResponse struct {
-	Strategy Strategy `json:"strategy"`
+	Strategy *Strategy `json:"strategy"`
 }
 
 type Strategy struct {
