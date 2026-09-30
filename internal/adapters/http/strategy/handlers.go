@@ -9,22 +9,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Handler interface {
+type Handlers interface {
 	Create(c *gin.Context)
 	GetByID(c *gin.Context)
 }
 
-type handler struct {
+type handlers struct {
 	svc strategyUC.Service
 }
 
-func NewHandler(svc strategyUC.Service) Handler {
-	return &handler{
+func NewHandler(svc strategyUC.Service) Handlers {
+	return &handlers{
 		svc: svc,
 	}
 }
 
-func (h *handler) Create(c *gin.Context) {
+func (h *handlers) Create(c *gin.Context) {
 	var req CreateRequest
 
 	if err := c.ShouldBind(&req); err != nil {
@@ -33,7 +33,7 @@ func (h *handler) Create(c *gin.Context) {
 		return
 	}
 
-	result, err := h.svc.Create(c, &strategyUC.CreateRequest{
+	result, err := h.svc.Create(c.Request.Context(), &strategyUC.CreateRequest{
 		Name:       req.Name,
 		Descrption: req.Description,
 	})
@@ -47,7 +47,7 @@ func (h *handler) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, CreateResponse{ID: result.StrategyID})
 }
 
-func (h *handler) GetByID(c *gin.Context) {
+func (h *handlers) GetByID(c *gin.Context) {
 	id := c.Param("strategy-id")
 
 	if id = strings.TrimSpace(id); id == "" {
