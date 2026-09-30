@@ -2,6 +2,7 @@ package strategy
 
 import (
 	"net/http"
+	"strings"
 
 	strategyUC "github.com/Hello256World/trader-backend_monorepo/internal/usecases/strategy"
 	"github.com/Hello256World/trader-backend_monorepo/pkg/apierrors"
@@ -47,15 +48,15 @@ func (h *handler) Create(c *gin.Context) {
 }
 
 func (h *handler) GetByID(c *gin.Context) {
-	var req GetByIDRequest
+	id := c.Param("strategy-id")
 
-	if err := c.ShouldBind(&req); err != nil {
-		apiErr := apierrors.NewBadRequestError("error getting strategy by id")
+	if id = strings.TrimSpace(id); id == "" {
+		apiErr := apierrors.NewBadRequestError("invalid id")
 		c.AbortWithStatusJSON(apiErr.StatusCode(), apiErr)
 		return
 	}
 
-	result, err := h.svc.GetByID(c, &strategyUC.GetByIDRequest{ID: req.ID})
+	result, err := h.svc.GetByID(c, &strategyUC.GetByIDRequest{ID: id})
 
 	if err != nil {
 		apiErr := apierrors.FromError(err)

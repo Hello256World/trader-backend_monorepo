@@ -10,7 +10,7 @@ type CreateResponse struct {
 }
 
 type GetByIDRequest struct {
-	ID string `json:"id" binding:"required"`
+	ID string `json:"id"`
 }
 
 type GetByIDResponse struct {
