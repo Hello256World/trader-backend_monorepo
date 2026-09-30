@@ -18,7 +18,7 @@ type handlers struct {
 	svc strategyUC.Service
 }
 
-func NewHandler(svc strategyUC.Service) Handlers {
+func NewHandlers(svc strategyUC.Service) Handlers {
 	return &handlers{
 		svc: svc,
 	}

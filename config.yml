@@ -1,0 +1,18 @@
+environment: development
+
+http:
+  port: 8080
+
+mongo:
+  host: localhost
+  port: 27017
+  # username و password را کامیت نکن؛ فقط از طریق env var ست کن:
+  # TRADER_MONGO_USERNAME=root
+  # TRADER_MONGO_PASSWORD=<real-secret>
+  username: root
+  password: admin
+  params:
+  database: traderdb
+  appName: trader-backend
+  minPoolSize: 5
+  maxPoolSize: 100
