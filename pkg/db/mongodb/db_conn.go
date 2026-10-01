@@ -1,21 +1,27 @@
-package mongo
+package mongodb
 
 import (
 	"context"
 	"fmt"
 
-	"github.com/Hello256World/trader-backend_monorepo/internal/config"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
 	"go.mongodb.org/mongo-driver/v2/mongo/readpref"
 )
 
-func NewClient(ctx context.Context, conf config.MongoConfig) (*mongo.Client, error) {
+type Options struct {
+	URI         string
+	AppName     string
+	MinPoolSize uint64
+	MaxPoolSize uint64
+}
+
+func Connect(ctx context.Context, opts Options) (*mongo.Client, error) {
 	mongoOpts := options.Client().
-		SetAppName(conf.AppName).
-		ApplyURI(conf.GetConnectionURI()).
-		SetMinPoolSize(uint64(conf.MinPoolSize)).
-		SetMaxPoolSize(uint64(conf.MaxPoolSize))
+		SetAppName(opts.AppName).
+		ApplyURI(opts.URI).
+		SetMinPoolSize(opts.MinPoolSize).
+		SetMaxPoolSize(opts.MaxPoolSize)
 
 	mongoClient, err := mongo.Connect(mongoOpts)
 	if err != nil {

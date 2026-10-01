@@ -24,7 +24,7 @@ func NewCreateUC(repo ports.StrategiesRepository) CreateUC {
 }
 
 type CreateRequest struct {
-	Name, Descrption string
+	Name, Description string
 }
 
 type CreateResponse struct {
@@ -56,5 +56,5 @@ func (uc createUC) fromCreateStrategyRequestToStrategy(req *CreateRequest) (*dom
 		return nil, apierrors.NewBadRequestError("Invalid name")
 	}
 
-	return &domain.Strategy{Name: req.Name, Description: req.Descrption}, nil
+	return &domain.Strategy{Name: req.Name, Description: req.Description}, nil
 }

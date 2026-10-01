@@ -60,7 +60,7 @@ func (repo *strategiesRepository) GetByID(c context.Context, id string) (*domain
 
 	var strategyDTO StrategyDTO
 
-	if err := res.Decode(strategyDTO); err != nil {
+	if err := res.Decode(&strategyDTO); err != nil {
 		return nil, apierrors.NewInternalServerError(fmt.Sprintf("error getting strategy '%s'", id))
 	}
 

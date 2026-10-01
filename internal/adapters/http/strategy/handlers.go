@@ -34,8 +34,8 @@ func (h *handlers) Create(c *gin.Context) {
 	}
 
 	result, err := h.svc.Create(c.Request.Context(), &strategyUC.CreateRequest{
-		Name:       req.Name,
-		Descrption: req.Description,
+		Name:        req.Name,
+		Description: req.Description,
 	})
 
 	if err != nil {
